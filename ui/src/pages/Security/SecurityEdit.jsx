@@ -12,7 +12,6 @@ export default function SecurityEdit() {
                     <div>
                         <input type="checkbox" id="active"/>
                         <label htmlFor="active">Active</label>
-                        <button id="delete">Delete</button>
                     </div>
                 </div>
                 <div>

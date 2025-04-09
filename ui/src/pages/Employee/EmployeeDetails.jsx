@@ -14,10 +14,7 @@ export default function EmployeeDetails() {
                     <input type="checkbox" id="active"/>
                     <label htmlFor="active">Active</label>
                 </div>
-                <div>
-                    <button id="edit">Edit</button>
-                    <button id="delete">Delete</button>
-                </div>
+                <button id="edit">Edit</button>
                 <div>
                     <label htmlFor="notes">Notes</label>
                     <textarea id="notes"></textarea>
