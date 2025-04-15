@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Reflection.Metadata;
 using api.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<EventType> EventTypes { get; set; }
@@ -15,10 +17,11 @@ namespace api.Data
         public DbSet<ItemEvent> ItemEvents { get; set; }
         public DbSet<ItemType> ItemTypes { get; set; }
         public DbSet<UsState> UsStates { get; set; }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(e => e.Employees)

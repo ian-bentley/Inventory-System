@@ -1,12 +1,15 @@
-﻿namespace api.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace api.Models
 {
+    [Index(nameof(SerialNumber), IsUnique = true)]
     public class Item
     {
         public int Id { get; set; }
         public bool Active { get; set; }
         public required string SerialNumber { get; set; }
         public int ItemTypeId { get; set; }
-        public required ItemType ItemType { get; set; }
+        public ItemType? ItemType { get; set; }
         public required string Model { get; set; }
         public int? CurrentEventTypeId { get; set; }
         public EventType? CurrentEventType { get; set; }

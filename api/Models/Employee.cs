@@ -12,7 +12,7 @@ namespace api.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public int DepartmentId { get; set; }
-        public required Department Department { get; set; }
+        public Department? Department { get; set; }
         public required string Title { get; set; }
         public int? ManagerId { get; set; }
         public Employee? Manager { get; set; }
