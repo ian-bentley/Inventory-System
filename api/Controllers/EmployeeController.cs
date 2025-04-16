@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 namespace api.Controllers
 {
+    [Authorize(Policy = "ViewEmployees")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
@@ -25,6 +27,7 @@ namespace api.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "EditEmployees")]
         [HttpPost]
         [Route("AddEmployee")]
         public IActionResult AddEmployee([FromBody] Employee employee)
@@ -32,6 +35,7 @@ namespace api.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "EditEmployees")]
         [HttpPut]
         [Route("UpdateEmployee")]
         public IActionResult UpdateEmployee([FromBody] Employee employee)

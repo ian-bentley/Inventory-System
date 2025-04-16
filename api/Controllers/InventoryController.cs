@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using api.Data;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace api.Controllers
 {
+    [Authorize(Policy = "ViewInventory")]
     [Route("api/[controller]")]
     [ApiController]
     public class InventoryController : ControllerBase
@@ -39,6 +41,7 @@ namespace api.Controllers
             return Ok(item);
         }
 
+        [Authorize(Policy = "EditInventory")]
         [HttpPost]
         [Route("AddItem")]
         public async Task<IActionResult> AddItem([FromBody] Item item)
@@ -48,6 +51,7 @@ namespace api.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "EditInventory")]
         [HttpPut]
         [Route("UpdateItem")]
         public async Task<IActionResult> UpdateItem([FromBody] Item updatedItem)

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using api.Data;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "ViewSecurity")]
     public class SecurityController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -50,6 +52,8 @@ namespace api.Controllers
             return Ok(access);
         }
 
+
+        [Authorize(Policy = "EditSecurity")]
         [HttpPost]
         [Route("UpdateAccess")]
         public async Task<IActionResult> UpdateAccess([FromBody] Access access)
