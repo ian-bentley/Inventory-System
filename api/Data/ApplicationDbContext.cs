@@ -38,11 +38,6 @@ namespace api.Data
                 .HasForeignKey(e => e.ItemTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Item>()
-                .HasOne(e => e.CurrentEventType)
-                .WithMany(e => e.Items)
-                .HasForeignKey(e => e.CurrentEventTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Item>()
                 .HasOne(e => e.AssignedTo)
                 .WithMany(e => e.Items)
                 .HasForeignKey(e => e.AssignedToId)

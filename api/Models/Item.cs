@@ -11,8 +11,6 @@ namespace api.Models
         public int ItemTypeId { get; set; }
         public ItemType? ItemType { get; set; }
         public required string Model { get; set; }
-        public int? CurrentEventTypeId { get; set; }
-        public EventType? CurrentEventType { get; set; }
         public int? AssignedToId { get; set; }
         public Employee? AssignedTo { get; set; }
         public string? Notes { get; set; }

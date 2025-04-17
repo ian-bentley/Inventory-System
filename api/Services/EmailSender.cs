@@ -25,7 +25,7 @@ namespace api.Services
             var subject = "Confirm Your Email Address";
             var message = $"Hello {user.UserName},\n\nPlease confirm your email address by clicking the following link: {confirmationLink}";
 
-            var mailMessage = new MailMessage("noreply@yourdomain.com", email, subject, message);
+            var mailMessage = new MailMessage(_domainEmail, email, subject, message);
             await _smtpClient.SendMailAsync(mailMessage);
         }
 
@@ -34,7 +34,7 @@ namespace api.Services
             var subject = "Password Reset Code";
             var message = $"Hello {user.UserName},\n\nYour password reset code is: {resetCode}\n\nUse this code to reset your password.";
 
-            var mailMessage = new MailMessage("noreply@yourdomain.com", email, subject, message);
+            var mailMessage = new MailMessage(_domainEmail, email, subject, message);
             await _smtpClient.SendMailAsync(mailMessage);
         }
 
@@ -43,7 +43,7 @@ namespace api.Services
             var subject = "Reset Your Password";
             var message = $"Hello {user.UserName},\n\nPlease reset your password by clicking the following link: {resetLink}";
 
-            var mailMessage = new MailMessage("noreply@yourdomain.com", email, subject, message);
+            var mailMessage = new MailMessage(_domainEmail, email, subject, message);
             await _smtpClient.SendMailAsync(mailMessage);
         }
     }

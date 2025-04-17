@@ -2,7 +2,6 @@
 using api.Data;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +21,49 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [Route("GetAccesses")]
+        public async Task<IActionResult> GetAccesses()
+        {
+            // Get all users
+            var users = await _userManager.Users.ToListAsync();
+            List<Access> accesses = new List<Access>();
+
+            foreach (var user in users) 
+            {
+                // Get the user's claims
+                var claims = await _userManager.GetClaimsAsync(user);
+
+                // Initializze a new access object based on which claims the user has
+                accesses.Add(new Access
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    EmailConfirmed = user.EmailConfirmed,
+                    LockoutEnd = user.LockoutEnd,
+                    ViewInventory = claims.Any(claim => claim.Type == "ViewInventory" && claim.Value == "true"),
+                    EditInventory = claims.Any(claim => claim.Type == "EditInventory" && claim.Value == "true"),
+                    ViewEmployees = claims.Any(claim => claim.Type == "ViewEmployees" && claim.Value == "true"),
+                    EditEmployees = claims.Any(claim => claim.Type == "EditEmployees" && claim.Value == "true"),
+                    ViewSecurity = claims.Any(claim => claim.Type == "ViewSecurity" && claim.Value == "true"),
+                    EditSecurity = claims.Any(claim => claim.Type == "EditSecurity" && claim.Value == "true")
+                });
+            }
+
+            return Ok(accesses);
+        }
+
+        [HttpGet]
         [Route("GetAccess")]
         public async Task<IActionResult> GetAccess(string userId)
         {
             // Get the user based on the id
             var user = await _userManager.FindByIdAsync(userId);
 
+            // If user was not found
             if (user == null)
             {
-                // User does not exist
-                return NotFound();
+                return NotFound($"Cannot get user. User (id:{userId}) was not found. Please check id sent and try again.");
             }
 
             // Get the user's claims
@@ -41,6 +73,10 @@ namespace api.Controllers
             var access = new Access
             {
                 UserId = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                LockoutEnd = user.LockoutEnd,
                 ViewInventory = claims.Any(claim => claim.Type == "ViewInventory" && claim.Value == "true"),
                 EditInventory = claims.Any(claim => claim.Type == "EditInventory" && claim.Value == "true"),
                 ViewEmployees = claims.Any(claim => claim.Type == "ViewEmployees" && claim.Value == "true"),
@@ -72,10 +108,10 @@ namespace api.Controllers
             //Get user based on user name
             var user = await _userManager.FindByIdAsync(access.UserId);
 
+            // If user was not found
             if (user == null)
             {
-                // User does not exist
-                return NotFound();
+                return NotFound($"Cannot get user. User (id:{access.UserId}) was not found. Please check id sent and try again.");
             }
 
             // Get user's existing claims
@@ -119,7 +155,7 @@ namespace api.Controllers
                 }
             }
 
-            return Ok();
+            return Ok("User access updated.");
         }
     }
 }
