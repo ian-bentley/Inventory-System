@@ -1,5 +1,6 @@
 import { Route, Routes, Link, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
+import Home from './pages/Home'
 import InventorySearch from './pages/Inventory/InventorySearch'
 import InventoryAdd from './pages/Inventory/InventoryAdd'
 import InventoryEdit from './pages/Inventory/InventoryEdit'
@@ -16,9 +17,19 @@ function App() {
 
   return (
     <>
+      <nav>
+        <h1>INVENTORY MANAGEMENT SYSTEM</h1>
+        <div>
+          <Link to="/inventory">Inventory</Link>
+          <Link to="/employees">Employees</Link>
+          <Link to="/security">Security</Link>
+        </div>
+      </nav>
+
       <Routes>
         <Route index element={<Navigate to='/login'/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/home' element={<Home/>}/>
         <Route path='/inventory'>
           <Route index element={<InventorySearch/>}/>
           <Route path='add' element={<InventoryAdd/>}/>

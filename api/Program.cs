@@ -64,8 +64,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 // Add authentication services
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+.AddCookie("Identity.Bearer");
 
 builder.Services.AddAuthorization(options =>
 {

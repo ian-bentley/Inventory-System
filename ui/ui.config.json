@@ -1,0 +1,9 @@
+{
+    "api": {
+      "url": "http://localhost:5227/"
+    },
+  
+    "ui": {
+      "url": "https://orange-dune-09347aa1e.6.azurestaticapps.net/"
+    }
+  }
