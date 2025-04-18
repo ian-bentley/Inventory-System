@@ -3,15 +3,18 @@ import config from "../../ui.config.json"
 import { useNavigate } from "react-router-dom"
 
 export default function Login() {
-    const notAuthorizedMessage = "The email and password entered does not match any account on record. Please enter a valid email/password or choose Forgot Password to recover your account."
+    const notAuthenticatedMessage = "The email and password entered does not match any account on record. Please enter a valid email/password or choose Forgot Password to recover your account."
 
     const [email, SetEmail] = useState('')
     const [password, SetPassword] = useState('')
-    const [notAuthorized, SetNotAuthorized] = useState(false)
+    const [notAuthenticated, SetNotAuthenticated] = useState(false)
     const navigate = useNavigate()
 
     const Login = (event) => {
+        // Prevent form from refreshing page
         event.preventDefault()
+
+        // Send login request
         fetch(config.api.url+"login", {
             method: "POST",
             headers: {
@@ -20,18 +23,22 @@ export default function Login() {
             body: JSON.stringify({
                 email: email,
                 password: password
-            })
+            }),
+            credentials: 'include'
         })
         .then(async response => {
+            // If not authenticated
             if (!response.ok)
             {
-                if (response.status == "401")
+                if (response.status == 401)
                 {
-                    SetNotAuthorized(true)
+                    // Sets condition that controls display message
+                    SetNotAuthenticated(true)
                 }
             }
             else
             {
+                // Login successful
                 navigate("/home")
             }
         })
@@ -40,21 +47,26 @@ export default function Login() {
     return(
         <>
             <form>
+                {/*Email input which updates email useState when modified*/}
                 <input 
                 type="text" id="username" name="username"
                 value={email}
                 onChange={(event)=>SetEmail(event.target.value)}/>
-
+                
+                {/*Password input which updates password useState when modified*/}
                 <input 
                 type="text" id="password" name="password"
                 value={password}
                 onChange={(event)=>SetPassword(event.target.value)}/>
                 
+                {/*Form logic is overwritten to call on Login function*/}
                 <button 
                 id="login"
                 onClick={(event)=>Login(event)}>LOGIN</button>
             </form>
-            <p>{`${notAuthorized? notAuthorizedMessage : ""}`}</p>
+
+            {/* Displayed message if login fails authentication */}
+            <p>{`${notAuthenticated? notAuthenticatedMessage : ""}`}</p>
         </>
     )
 }
