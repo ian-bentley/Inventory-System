@@ -1,17 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System;
 using Newtonsoft.Json.Serialization;
 using api.Data;
 using api.Models;
-using Microsoft.Extensions.Options;
 using api.Services;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,31 +38,40 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-// Use cookie authentication
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
-    options.Events.OnRedirectToAccessDenied = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
+//JWT
+var jwtKey = builder.Configuration["Jwt:Key"];
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
-    options.SlidingExpiration = true; // Enable sliding expiration
-    options.ExpireTimeSpan = TimeSpan.FromDays(1); // Cookie expiration time
-    options.Cookie.HttpOnly = true; // Cookie should be accessible only via HTTP (not JavaScript)
-    options.Cookie.SameSite = SameSiteMode.Strict; // Cookie SameSite mode
-    options.Cookie.Name = "IventorySystem.AuthCookie";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = key
+    };
 });
 
-// Add authentication services
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-.AddCookie("Identity.Bearer");
+// CORS
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -94,10 +100,6 @@ builder.Services.AddAuthorization(options =>
             context.User.HasClaim("EditSecurity", "true")));
 });
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 //JSON Serializer
@@ -128,12 +130,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
-//Enable CORS
-app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
