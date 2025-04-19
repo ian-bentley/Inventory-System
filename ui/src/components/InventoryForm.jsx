@@ -1,15 +1,29 @@
-export default function InventoryForm() {
-    return(
-        <>
-            <form>
-                <label>Enter the information below:</label>
-                <input type="text" id="serial-number" name="serialNumber"/>
-                <select id="type" name="type">
-                    <option id="no-selection" value=''>Select an option...</option>
-                </select>
-                <input type="text" id="model" name="model"/>
-                <button id="save">Save</button>
-            </form>
-        </>
-    )
+export default function InventoryForm({ item, itemTypes, onChange, onSubmit }) {
+    return (
+        <form onSubmit={onSubmit}>
+            <label>Enter the information below:</label>
+            <input type="text" name="SerialNumber"
+                value={item.SerialNumber}
+                onChange={onChange}
+            />
+            <select name="ItemTypeId"
+                value={item.ItemTypeId}
+                onChange={onChange}
+            >
+                <option value="">Select an option...</option>
+                {itemTypes && itemTypes.map((itemType,index)=>(
+                    <option 
+                    key={index} 
+                    value={itemType.Id}>
+                        {itemType.Name}
+                    </option>
+                ))}
+            </select>
+            <input type="text" name="Model"
+                value={item.Model}
+                onChange={onChange}
+            />
+            <button type="submit">Save</button>
+        </form>
+    );
 }

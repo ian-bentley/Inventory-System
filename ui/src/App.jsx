@@ -13,6 +13,7 @@ import SecuritySearch from './pages/Security/SecuritySearch'
 import SecurityEdit from './pages/Security/SecurityEdit'
 import SecurityAdd from './pages/Security/SecurityAdd'
 import UnauthorizedPage from './pages/UnauthorizedPage'
+import UnauthorizedAction from './pages/UnauthorizedAction'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/home' element={<Home/>}/>
         <Route path='/unauthorizedpage' element={<UnauthorizedPage/>}/>
+        <Route path='/unauthorizedaction' element={<UnauthorizedAction/>}/>
         <Route path='/inventory'>
           <Route index element={<InventorySearch/>}/>
           <Route path='add' element={<InventoryAdd/>}/>

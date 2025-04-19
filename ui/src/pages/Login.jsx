@@ -15,14 +15,14 @@ export default function Login() {
         event.preventDefault()
 
         // Send login request
-        fetch(config.api.url+"login", {
+        fetch(config.api.url+"login?useCookies=true", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email,
-                password: password
+                Email: email,
+                Password: password
             }),
             credentials: 'include'
         })

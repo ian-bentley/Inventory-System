@@ -1,19 +1,31 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using Newtonsoft.Json.Serialization;
 using api.Data;
 using api.Models;
-using Microsoft.Extensions.Options;
 using api.Services;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Enable CORS
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        // Allow specific origins as defined in configuration
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();  // Allow credentials (cookies)
+    });
+});
 
 // Add EF Core with SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,6 +54,29 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 // Use cookie authentication
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddCookie(options =>
+{
+    options.SlidingExpiration = true; // Enable sliding expiration
+    options.ExpireTimeSpan = TimeSpan.FromDays(1); // Cookie expiration time
+    options.Cookie.HttpOnly = true; // Cookie should be accessible only via HTTP (not JavaScript)
+    options.Cookie.SameSite = SameSiteMode.None; // Cookie SameSite mode for cross-origin requests
+    options.Cookie.Name = "InventorySystem.AuthCookie";
+
+    // Set SecurePolicy based on the environment
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    if (environment == Environments.Production)
+    {
+        // In production, require cookies to be sent over HTTPS
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    }
+    else
+    {
+        // For local development (HTTP), set SecurePolicy to None
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    }
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Events.OnRedirectToLogin = context =>
@@ -54,18 +89,7 @@ builder.Services.ConfigureApplicationCookie(options =>
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
         return Task.CompletedTask;
     };
-
-    options.SlidingExpiration = true; // Enable sliding expiration
-    options.ExpireTimeSpan = TimeSpan.FromDays(1); // Cookie expiration time
-    options.Cookie.HttpOnly = true; // Cookie should be accessible only via HTTP (not JavaScript)
-    options.Cookie.SameSite = SameSiteMode.Strict; // Cookie SameSite mode
-    options.Cookie.Name = "IventorySystem.AuthCookie";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
-
-// Add authentication services
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-.AddCookie("Identity.Bearer");
 
 builder.Services.AddAuthorization(options =>
 {
@@ -131,8 +155,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-//Enable CORS
-app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -53,6 +53,14 @@ namespace api.Controllers
 
             return Ok(item);
         }
+
+        [Authorize(Policy = "EditInventory")]
+        [HttpGet]
+        [Route("GetItemTypes")]
+        public async Task<IActionResult> GetItemTypes()
+        {
+            return Ok(await _context.ItemTypes.ToListAsync());
+        }
         
         [Authorize(Policy = "EditInventory")]
         [HttpPost]
