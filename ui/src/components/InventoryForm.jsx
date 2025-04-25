@@ -1,4 +1,7 @@
 export default function InventoryForm({ item, itemTypes, onChange, onSubmit }) {
+
+    if (!item) return <div>Loading...</div>
+
     return (
         <form onSubmit={onSubmit}>
             <label>Enter the information below:</label>

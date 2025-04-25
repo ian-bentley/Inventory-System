@@ -11,7 +11,7 @@ export default function AddItemPage() {
         SerialNumber: "",
         ItemTypeId: "",
         Model: ""
-    });
+    })
 
     const [itemTypes, setItemTypes] = useState(null)
     const navigate = useNavigate()
@@ -44,11 +44,11 @@ export default function AddItemPage() {
         })
     }, [])
 
-    // If a form input changes, update the item based on the change
+    // If a form input changes, update the item data based on the change
     const handleChange = (e) => {
         const { name, value } = e.target
         setItem(prev => ({ ...prev, [name]: value }))
-    };
+    }
 
     // Add item
     const handleSubmit = async (e) => {

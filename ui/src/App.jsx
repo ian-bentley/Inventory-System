@@ -19,11 +19,11 @@ function App() {
 
   return (
     <>
-      <nav>
+      <nav className='border mb-[210px]'>
         <h1>INVENTORY MANAGEMENT SYSTEM</h1>
         <div>
           <Link to="/inventory">Inventory</Link>
-          <Link to="/employees">Employees</Link>
+          <Link to="/employee">Employee</Link>
           <Link to="/security">Security</Link>
         </div>
       </nav>
@@ -40,7 +40,7 @@ function App() {
           <Route path='edit/:id' element={<InventoryEdit/>}/>
           <Route path='details/:id' element={<InventoryDetails/>}/>
         </Route>
-        <Route path='/employees'>
+        <Route path='/employee'>
           <Route index element={<EmployeeSearch/>}/>
           <Route path='add' element={<EmployeeAdd/>}/>
           <Route path='edit/:id' element={<EmployeeEdit/>}/>

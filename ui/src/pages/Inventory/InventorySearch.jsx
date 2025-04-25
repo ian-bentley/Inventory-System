@@ -7,8 +7,8 @@ export default function InventorySearch() {
     const [items, setItems] = useState(null)
     const navigate = useNavigate()
     
+    // Get data for items list
     useEffect(()=> {
-        // Get data for items list
         fetch(config.api.url+"api/Inventory/GetItems", {
             credentials: "include"
           })
@@ -53,20 +53,24 @@ export default function InventorySearch() {
                 <div className="table-row-group">
                     {/*As long as items is set, create a table row for each item*/}
                     {items && items.map((item,index)=>(
-                        <div className="table-row" key={index}>
+                        <div className="table-row"
+                        key={index}
+                        onClick={()=>navigate("/inventory/details/"+item.Id)}
+                        >
+                            {/* On-click, goes to item details for this item */}
                             <div className="table-cell">{item.SerialNumber}</div>
                             <div className="table-cell">{item.ItemType.Name}</div>
                             <div className="table-cell">{item.Model}</div>
-                            <div className="table-cell">{item.Active}</div>
+                            <div className="table-cell">{item.Active? "Active" : "Disabled"}</div>
                             {/*Assigned employee name will be written in format: (last name, first name)*/}
                             {/*Is not displayed if there is no assigned employee*/}
                             {item.AssignedTo && <div className="table-cell">{`${item.AssignedTo.LastName}, ${item.AssignedTo.FirstName}`}</div>}
                         </div>
                     ))}
-                    
                 </div>
             </div>
             <PageSelector/>
+            {/* Goes to inventory add */}
             <button onClick={()=>navigate('/inventory/add')}>Add</button>
         </>
     )

@@ -58,6 +58,22 @@ namespace api.Controllers
         }
 
         [Authorize(Policy = "EditEmployees")]
+        [HttpGet]
+        [Route("GetDepartments")]
+        public async Task<IActionResult> GetDepartments()
+        {
+            return Ok(await _context.Departments.ToListAsync());
+        }
+
+        [Authorize(Policy = "EditEmployees")]
+        [HttpGet]
+        [Route("GetUsStates")]
+        public async Task<IActionResult> GetUsStates()
+        {
+            return Ok(await _context.UsStates.ToListAsync());
+        }
+
+        [Authorize(Policy = "EditEmployees")]
         [HttpPost]
         [Route("AddEmployee")]
         public async Task<IActionResult> AddEmployee([FromBody] Employee employee)

@@ -1,25 +1,72 @@
+import { useEffect, useState } from "react"
+import config from "../../../ui.config.json";
+import { useParams, useNavigate } from "react-router-dom";
+import PageSelector from "../../components/PageSelector"
+
 export default function InventoryDetails() {
+    const { id } = useParams()
+    const [item, setItem] = useState(null)
+    const navigate = useNavigate()
+
+    // Get item by id parameter
+    useEffect(()=> {
+        fetch(config.api.url+"api/Inventory/GetItem?id="+id, {
+            credentials: "include"
+          })
+        .then(async response => {
+            if (!response.ok)
+            {
+                // If not authenticated
+                if (response.status == 401)
+                {
+                    navigate("/login")
+                }
+                // If unauthorized to view inventory
+                if (response.status == 403)
+                {
+                    navigate("/unauthorizedpage")
+                }
+
+                //If item with that id doesn't exist
+                if (response.status == 404)
+                {
+                    navigate("/404")
+                }
+            }
+            else
+            {
+                const data = await response.json()
+                setItem(data)
+            }
+        })
+    }, [])
+
+    if (!item) return <div>Loading...</div>
+    
     return(
         <>
             <section id="item-details">
                 <form>
                     <div>
-                        <p>Serial Number: DX37HT2</p>
-                        <p>Type: Computer</p>
-                        <p>Model: Dell Latitude 3390</p>
-                        <input type="checkbox" id="active"/>
+                        <p>Serial Number: {item.SerialNumber}</p>
+                        <p>Type: {item.ItemType.Name}</p>
+                        <p>Model: {item.Model}</p>
+                        <input type="checkbox" id="active" 
+                        checked={item.Active}/>
                         <label htmlFor="active">Active</label>
                     </div>
-                    <button id="edit">Edit</button>
+                    {/* Goes to inventory edit for this item */}
+                    <button onClick={()=>navigate("/inventory/edit/"+item.Id)}>Edit</button>
                     <div>
                         <label htmlFor="notes">Notes</label>
-                        <textarea id="notes"></textarea>
+                        <textarea id="notes" value={item.Notes? item.Notes : ""}></textarea>
                     </div>
                 </form>
             </section>
             <section id="assignment">
                 <form>
-                    <p>John Smith</p>
+                    {/* Show assigned to name if it exists */}
+                    <p>{`Assigned To: ${item.AssignedTo? `${item.AssignedTo.FirstName} ${item.AssignedTo.LastName}` : ""}`}</p>
                     <div>
                         <button id="assign">Assign</button>
                         <button id="return">Return</button>
@@ -35,23 +82,18 @@ export default function InventoryDetails() {
                         </div>
                     </div>
                     <div className="table-row-group">
-                        <div className="table-row">
-                            <div className="table-cell">Assigned</div>
-                            <div className="table-cell">3/27/25</div>
-                            <div className="table-cell">John Smith</div>
-                            <div className="table-cell">New hire</div>
-                        </div>
-                        <div className="table-row">
-                            <div className="table-cell">Returned</div>
-                            <div className="table-cell">3/12/25</div>
-                            <div className="table-cell">Steve James</div>
-                            <div className="table-cell">Termination</div>
-                        </div>
+                        {item.ItemEvents.map((itemEvent,index)=>(
+                            <div className="table-row" key={index}>
+                                <div className="table-cell">{itemEvent.EventType.Name}</div>
+                                <div className="table-cell">{itemEvent.DateTime}</div>
+                                {/* Display assigned name in format: (last, first) */}
+                                <div className="table-cell">{`${itemEvent.Employee.LastName} ${itemEvent.Employee.FirstName}`}</div>
+                                <div className="table-cell">{itemEvent.Reason}</div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div id="page-selector">
-                    &lt;&lt; &lt; 1 ... 7 8 9 ... 20 &gt; &gt;&gt;
-                </div>
+                <PageSelector/>
             </section>
         </>
     )

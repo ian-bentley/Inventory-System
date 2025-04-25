@@ -1,26 +1,58 @@
+import { useEffect, useState } from "react";
+import config from "../../../ui.config.json";
+import { useNavigate } from "react-router-dom";
+
 export default function SecurityAdd() {
+    // Access data
+    const [newUser, setNewUser] = useState({
+        email: "",
+        password: ""
+    })
+    const navigate = useNavigate()
+
+    const Register = (e) => {
+        // Prevent form from refreshing page
+        e.preventDefault()
+
+        // Send registration
+        fetch(config.api.url+"register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(newUser)
+        })
+        .then(async response => {
+            if (!response.ok)
+            {
+
+            }
+            else
+            {
+                alert("User registered successfuly!")
+                navigate("/security")
+            }
+        })
+    }
+
+    // If the form input changes, update the user based on the change
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setNewUser(prev => ({ ...prev, [name]: value }))
+    }
+
     return(
         <>
             <form>
-                <input type="text" id="employee-id" name="employeeId"/>
-                <p>Name: John Smith</p>
-                <p>Is this valid?</p>
-                <input type="text" id="password" name="password"/>
+                <input type="text" name="email"
+                value={newUser.email}
+                onChange={(handleChange)}/>
+                <input type="text" name="password"
+                value={newUser.password}
+                onChange={handleChange}/>
                 <input type="text" id="password-confirm" name="passwordConfirm"/>
-                <label>Permissions:</label>
-                <input type="checkbox" id="view-employees"/>
-                <label htmlFor="view-employees">View employees</label>
-                <input type="checkbox" id="edit-employees"/>
-                <label htmlFor="edit-employees">Edit employees</label>
-                <input type="checkbox" id="view-inventory"/>
-                <label htmlFor="view-inventory">View inventory</label>
-                <input type="checkbox" id="edit-inventory"/>
-                <label htmlFor="edit-inventory">Edit inventory</label>
-                <input type="checkbox" id="view-security"/>
-                <label htmlFor="view-security">View security</label>
-                <input type="checkbox" id="edit-security"/>
-                <label htmlFor="edit-security">Edit security</label>
-                <button id="save">Save</button>
+                <button onClick={(event)=>Register(event)}>Register</button>
             </form>
         </>
     )

@@ -10,9 +10,9 @@ export default function Login() {
     const [notAuthenticated, SetNotAuthenticated] = useState(false)
     const navigate = useNavigate()
 
-    const Login = (event) => {
+    const Login = (e) => {
         // Prevent form from refreshing page
-        event.preventDefault()
+        e.preventDefault()
 
         // Send login request
         fetch(config.api.url+"login?useCookies=true", {
@@ -46,22 +46,26 @@ export default function Login() {
 
     return(
         <>
-            <form>
+            <form className="flex flex-col items-center">
                 {/*Email input which updates email useState when modified*/}
-                <input 
-                type="text" id="username" name="username"
+                <input
+                className="w-[240px] px-[20px] py-[12px] mb-[20px] border rounded-sm"
+                type="text" name="username"
+                placeholder="Email"
                 value={email}
                 onChange={(event)=>SetEmail(event.target.value)}/>
                 
                 {/*Password input which updates password useState when modified*/}
-                <input 
-                type="text" id="password" name="password"
+                <input
+                className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
+                type="text" name="password"
+                placeholder="Password"
                 value={password}
                 onChange={(event)=>SetPassword(event.target.value)}/>
                 
                 {/*Form logic is overwritten to call on Login function*/}
                 <button 
-                id="login"
+                className="w-[120px] py-[12px] border rounded-sm bg-[#014880] text-white"
                 onClick={(event)=>Login(event)}>LOGIN</button>
             </form>
 

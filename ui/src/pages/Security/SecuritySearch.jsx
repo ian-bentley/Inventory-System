@@ -1,6 +1,40 @@
-import PageSelector from "../../components/PageSelector";
+import { useEffect, useState } from "react"
+import PageSelector from "../../components/PageSelector"
+import config from "../../../ui.config.json"
+import { useNavigate } from "react-router-dom"
 
 export default function SecuritySearch() {
+    const [accesses, setAccesses] = useState(null)
+    const navigate = useNavigate()
+
+    // Get data for access list
+    useEffect(()=> {
+        fetch(config.api.url+"api/Security/GetAccesses", {
+            credentials: "include"
+          })
+        .then (async response => {
+            if (!response.ok)
+            {
+                // If not authenticated
+                if (response.status == 401)
+                {
+                    navigate("/login")
+                }
+                // If unauthorized to view security
+                if (response.status == 403)
+                {
+                    navigate("/unauthorizedpage")
+                }
+            }
+            else
+            {
+                const data = await response.json()
+                setAccesses(data)
+            }
+        })
+    }, [])
+
+
     return(
         <>
             <form id="search">
@@ -10,21 +44,24 @@ export default function SecuritySearch() {
             <div id="search-results" className="table">
                 <div className="table-header-group">
                     <div className="table-row">
-                        <div className="table-cell">Name</div>
-                        <div className="table-cell">Employee ID</div>
-                        <div className="table-cell">Status</div>
+                        <div className="table-cell">Email</div>
                     </div>
                 </div>
                 <div className="table-row-group">
-                    <div className="table-row">
-                        <div className="table-cell">John Smith</div>
-                        <div className="table-cell">1023</div>
-                        <div className="table-cell">Active</div>
-                    </div>
+                    {/*As long as accesses is set, create a table row for each access*/}
+                    {accesses && accesses.map((access,index)=>(
+                        <div className="table-row"
+                        key={index}
+                        onClick={()=>navigate("/security/edit/"+access.UserId)}
+                        >
+                            {/* On-click, goes to access edit for this access */}
+                            <div className="table-cell">{access.Email}</div>
+                        </div>
+                    ))}
                 </div>
             </div>
             <PageSelector/>
-            <button id="add-item">Add</button>
+            <button onClick={()=>navigate("/security/add")}>Add</button>
         </>
     )
 }
