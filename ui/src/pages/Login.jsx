@@ -46,11 +46,11 @@ export default function Login() {
 
     return(
         <>
-            <form className="flex flex-col items-center">
+            <form className="flex flex-col items-center mt-[210px]">
                 {/*Email input which updates email useState when modified*/}
                 <input
                 className="w-[240px] px-[20px] py-[12px] mb-[20px] border rounded-sm"
-                type="text" name="username"
+                type="email" name="email"
                 placeholder="Email"
                 value={email}
                 onChange={(event)=>SetEmail(event.target.value)}/>
@@ -58,7 +58,7 @@ export default function Login() {
                 {/*Password input which updates password useState when modified*/}
                 <input
                 className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
-                type="text" name="password"
+                type="password" name="password"
                 placeholder="Password"
                 value={password}
                 onChange={(event)=>SetPassword(event.target.value)}/>

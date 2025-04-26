@@ -19,12 +19,14 @@ function App() {
 
   return (
     <>
-      <nav className='border mb-[210px]'>
-        <h1>INVENTORY MANAGEMENT SYSTEM</h1>
-        <div>
-          <Link to="/inventory">Inventory</Link>
-          <Link to="/employee">Employee</Link>
-          <Link to="/security">Security</Link>
+      <nav>
+        <h1 className='text-2xl mb-[30px]'>INVENTORY MANAGEMENT SYSTEM</h1>
+        <div className='bg-[#014880]'>
+          <div className='py-[10px] flex max-w-[800px] text-white'>
+            <Link className="px-[20px]" to="/inventory">Inventory Management</Link>
+            <Link className="px-[20px]" to="/employee">Employee Management</Link>
+            <Link className="px-[20px]" to="/security">Security Management</Link>
+          </div>
         </div>
       </nav>
 

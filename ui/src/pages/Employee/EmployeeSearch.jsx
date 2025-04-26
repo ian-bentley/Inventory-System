@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 
 export default function EmployeeSearch() {
     const [employees, setEmployees] = useState(null)
+    const [filteredEmployees, setFilteredEmployees] = useState(null)
+    const [searchText, setSearchText] = useState("")
     const navigate = useNavigate()
 
     // Get data for employees list
@@ -30,43 +32,67 @@ export default function EmployeeSearch() {
             {
                 const data = await response.json()
                 setEmployees(data)
+                setFilteredEmployees(data)
             }
         })
     }, [])
 
+    // Filter list based on search
+    const Search = (e) => {
+        // Prevent form from refreshing page
+        e.preventDefault()
+
+        setFilteredEmployees(employees.filter(employee =>
+            employee.FirstName.toLowerCase().includes(searchText.toLowerCase()) ||
+            employee.LastName.toLowerCase().includes(searchText.toLowerCase())))
+    }
+
     return(
         <>
-            <form id="search">
-                <input type="text"/>
-                <button>Search</button>
+            <form id="search-bar" className="mt-[40px] ml-[30px]">
+                <input className="w-[240px] px-[20px] py-[12px] mb-[20px] mr-[20px] border rounded-sm"
+                type="text"
+                placeholder="Enter a name"
+                value={searchText}
+                onChange={(e)=>setSearchText(e.target.value)}/>
+                <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white"
+                onClick={(e)=>Search(e)}>Search</button>
             </form>
-            <div id="search-results" className="table">
-                <div className="table-header-group">
-                    <div className="table-row">
-                        <div className="table-cell">Name</div>
-                        <div className="table-cell">Employee ID</div>
-                        <div className="table-cell">Status</div>
+            <div id="search-results" className="m-auto max-w-[416px] mt-[40px]">
+                <div className="table">
+                    <div className="table-header-group">
+                        <div className="table-row">
+                            <div className="table-cell w-[235px]">Name</div>
+                            <div className="table-cell w-[110px]">Employee ID</div>
+                            <div className="table-cell w-[70px]">Status</div>
+                        </div>
                     </div>
                 </div>
-                <div className="table-row-group">
-                    {/*As long as employees is set, create a table row for each employee*/}
-                    {employees && employees.map((employee,index)=>(
-                        <div className="table-row"
-                        key={index}
-                        onClick={()=>navigate("/employee/details/"+employee.Id)}
-                        >
-                            {/* On-click, goes to employee details for this employee */}
-                            {/*Employee name will be written in format: (last name, first name)*/}
-                            <div className="table-cell">{`${employee.LastName}, ${employee.FirstName}`}</div>
-                            <div className="table-cell">{employee.EmployeeNumber}</div>
-                            <div className="table-cell">{employee.Active? "Active" : "Disabled"}</div>
-                        </div>
-                    ))}
+                <div className="table border mb-[20px]">
+                    <div className="table-row-group">
+                        {/*As long as employees is set, create a table row for each employee*/}
+                        {filteredEmployees && filteredEmployees.map((employee,index)=>(
+                            <div className="table-row hover:bg-[#e0dcdc]"
+                            key={index}
+                            onClick={()=>navigate("/employee/details/"+employee.Id)}
+                            >
+                                {/* On-click, goes to employee details for this employee */}
+                                {/*Employee name will be written in format: (last name, first name)*/}
+                                <div className="table-cell w-[235px]">{`${employee.LastName}, ${employee.FirstName}`}</div>
+                                <div className="table-cell w-[110px]">{employee.EmployeeNumber}</div>
+                                <div className="table-cell w-[70px]">{employee.Active? "Active" : "Disabled"}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex justify-between">
+                    <PageSelector/>
+                    {/* Goes to employee add */}
+                    <button 
+                    className="ml-[40px] w-[100px] py-[12px] border rounded-sm bg-[#014880] text-white"
+                    onClick={()=>navigate('/employee/add')}>Add</button>
                 </div>
             </div>
-            <PageSelector/>
-            {/* Goes to employee add */}
-            <button onClick={()=>navigate('/employee/add')}>Add</button>
         </>
     )
 }
