@@ -41,54 +41,71 @@ export default function EmployeeDetails() {
         })
     }, [])
 
-    if (!employee) return <div>Loading...</div>
+    if (!employee) return <div className="mx-[20px] mt-[40px]">Loading...</div>
 
     return(
         <>
-            <form id="employee-details">
-                <div>
-                    {/*Employee name will be written in format: (first + last)*/}
-                    <p>Name: {`${employee.FirstName} ${employee.LastName}`}</p>
-                    <p>Department: {employee.Department.Name}</p>
-                    <p>Title: {employee.Title}</p>
-                    <p>Employee ID: {employee.EmployeeNumber}</p>
-                    {/*If employee has a manager, the name will be written in format: (first + last)*/}
-                    <p>Manager: {employee.Manager && `${employee.Manager.FirstName} ${employee.Manager.LastName}`}</p>
-                    <label>Address:</label>
-                    {/* Display street 1 and street 2, if it exists, together */}
-                    <p>{`${employee.HomeAddress.Street1} ${employee.HomeAddress.Street2? employee.HomeAddress.Street2: ""}`}</p>
-                    {/* Display city, state, and zip in one line */}
-                    <p>{`${employee.HomeAddress.City} ${employee.HomeAddress.UsState.Initials} ${employee.HomeAddress.Zip}`}</p>
-                    <input type="checkbox" id="active" 
-                    checked={employee.Active}/>
-                    <label htmlFor="active">Active</label>
-                </div>
-                {/* Goes to employee edit for this employee */}
-                <button onClick={()=>navigate("/employee/edit/"+employee.Id)}>Edit</button>
-                <div>
-                    <label htmlFor="notes">Notes</label>
-                    <textarea id="notes" value={employee.Notes? employee.Notes : ""}></textarea>
-                </div>
-            </form>
-            <div id="assigned-items" className="table">
-                <div className="table-header-group">
-                    <div className="table-row">
-                        <div className="table-cell">Serial Number</div>
-                        <div className="table-cell">Type</div>
-                        <div className="table-cell">Model</div>
+            <section id="employee-details" className="mt-[40px] mb-[40px]" >
+                <form className="px-[20px] flex flex-wrap">
+                    <div className="w-[443px] flex items-start justify-between">
+                        <div>
+                            {/*Employee name will be written in format: (first + last)*/}
+                            <p className="mb-[10px]">Name: {`${employee.FirstName} ${employee.LastName}`}</p>
+                            <p className="mb-[10px]">Department: {employee.Department.Name}</p>
+                            <p className="mb-[10px]">Title: {employee.Title}</p>
+                            <p className="mb-[10px]">Employee ID: {employee.EmployeeNumber}</p>
+                            {/*If employee has a manager, the name will be written in format: (first + last)*/}
+                            <p className="mb-[10px]">Manager: {employee.Manager && `${employee.Manager.FirstName} ${employee.Manager.LastName}`}</p>
+                            <div className="flex">
+                                <label className="mr-[10px]">Address:</label>
+                                <div>
+                                    {/* Display street 1 and street 2, if it exists, together */}
+                                    <p>{`${employee.HomeAddress.Street1} ${employee.HomeAddress.Street2? employee.HomeAddress.Street2: ""}`}</p>
+                                    {/* Display city, state, and zip in one line */}
+                                    <p className="mb-[10px]">{`${employee.HomeAddress.City} ${employee.HomeAddress.UsState.Initials} ${employee.HomeAddress.Zip}`}</p>
+                                </div>
+                            </div>
+                            <input className="mb-[30px] mr-[10px]"
+                            type="checkbox" id="active" 
+                            checked={employee.Active}/>
+                            <label htmlFor="active">Active</label>
+                        </div>
+                        {/* Goes to employee edit for this employee */}
+                        <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white mr-[10px]"
+                        type="button"
+                        onClick={()=>navigate("/employee/edit/"+employee.Id)}>Edit</button>
+                    </div>
+                    <div className="flex flex-col ml-[60px]">
+                        <label htmlFor="notes">Notes</label>
+                        <textarea id="notes" className="w-[360px] px-[20px] py-[12px] mb-[20px] border rounded-sm resize-none" 
+                        rows="6"
+                        value={employee.Notes? employee.Notes : ""}></textarea>
+                    </div>
+                </form>
+            </section>
+            <section id="assigned-items" className="px-[20px]">
+                <div id="assigned-items" className="table">
+                    <div className="table-header-group">
+                        <div className="table-row">
+                            <div className="table-cell w-[130px]">Serial Number</div>
+                            <div className="table-cell w-[100px]">Type</div>
+                            <div className="table-cell w-[170px]">Model</div>
+                        </div>
                     </div>
                 </div>
-                <div className="table-row-group">
-                    {employee.Items.map((item,index)=>(
-                            <div className="table-row" key={index}>
-                            <div className="table-cell">{item.SerialNumber}</div>
-                            <div className="table-cell">{item.ItemType.Name}</div>
-                            <div className="table-cell">{item.Model}</div>
-                        </div>
-                    ))}
+                <div className="table border mb-[20px]">
+                    <div className="table-row-group">
+                        {employee.Items.map((item,index)=>(
+                                <div className="table-row" key={index}>
+                                <div className="table-cell w-[130px]">{item.SerialNumber}</div>
+                                <div className="table-cell w-[100px]">{item.ItemType.Name}</div>
+                                <div className="table-cell w-[170px]">{item.Model}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <PageSelector/>
+                <PageSelector/>
+            </section>
         </>
     )
 }

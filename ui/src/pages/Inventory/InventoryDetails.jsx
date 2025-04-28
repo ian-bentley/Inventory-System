@@ -41,56 +41,71 @@ export default function InventoryDetails() {
         })
     }, [])
 
-    if (!item) return <div>Loading...</div>
+    if (!item) return <div className="mx-[20px] mt-[40px]">Loading...</div>
     
     return(
         <>
-            <section id="item-details">
-                <form>
-                    <div>
-                        <p>Serial Number: {item.SerialNumber}</p>
-                        <p>Type: {item.ItemType.Name}</p>
-                        <p>Model: {item.Model}</p>
-                        <input type="checkbox" id="active" 
-                        checked={item.Active}/>
-                        <label htmlFor="active">Active</label>
+            <section id="item-details" className="mt-[40px]">
+                <form className="px-[20px] flex flex-wrap">
+                    <div className="w-[443px] flex items-start justify-between">
+                        <div>
+                            <p className="mb-[10px]">Serial Number: {item.SerialNumber}</p>
+                            <p className="mb-[10px]">Type: {item.ItemType.Name}</p>
+                            <p className="mb-[10px]">Model: {item.Model}</p>
+                            <input className="mb-[30px] mr-[10px]"
+                            type="checkbox" id="active" 
+                            checked={item.Active}/>
+                            <label htmlFor="active">Active</label>
+                        </div>
+                        {/* Goes to inventory edit for this item */}
+                        <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white mr-[10px]"
+                        type="button"
+                        onClick={()=>navigate("/inventory/edit/"+item.Id)}>Edit</button>
                     </div>
-                    {/* Goes to inventory edit for this item */}
-                    <button onClick={()=>navigate("/inventory/edit/"+item.Id)}>Edit</button>
-                    <div>
-                        <label htmlFor="notes">Notes</label>
-                        <textarea id="notes" value={item.Notes? item.Notes : ""}></textarea>
+                    <div className="flex flex-col ml-[60px]">
+                        <label className="mb-[10px]"
+                        htmlFor="notes">Notes</label>
+                        <textarea id="notes" className="w-[360px] px-[20px] py-[12px] mb-[20px] border rounded-sm resize-none" 
+                        rows="6"
+                        value={item.Notes? item.Notes : ""}></textarea>
                     </div>
                 </form>
             </section>
             <section id="assignment">
-                <form>
+                <form className="flex justify-between items-center px-[20px] mb-[40px] max-w-[480px]">
                     {/* Show assigned to name if it exists */}
                     <p>{`Assigned To: ${item.AssignedTo? `${item.AssignedTo.FirstName} ${item.AssignedTo.LastName}` : ""}`}</p>
-                    <div>
-                        <button id="assign">Assign</button>
-                        <button id="return">Return</button>
+                    <div className="flex flex-col">
+                        <button id="assign" className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white mr-[10px] mb-[20px]"
+                        >Assign</button>
+                        <button id="return" className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white mr-[10px]"
+                            >Return</button>
                     </div>
                 </form>
-                <div id="assignment-history" className="table">
-                    <div className="table-header-group">
-                        <div className="table-row">
-                            <div className="table-cell">Status</div>
-                            <div className="table-cell">Date</div>
-                            <div className="table-cell">Assignee</div>
-                            <div className="table-cell">Reason</div>
+                <div id="assignment-history" className="px-[20px]">
+                    <div className="table">
+                        <div className="table-header-group">
+                            <div className="table-row">
+                                <div className="table-cell w-[100px]">Status</div>
+                                <div className="table-cell w-[90px]">Date</div>
+                                <div className="table-cell w-[220px]">Assignee</div>
+                                <div className="hidden min-[800px]:table-cell w-[390px]">Reason</div>
+                            </div>
                         </div>
                     </div>
-                    <div className="table-row-group">
-                        {item.ItemEvents.map((itemEvent,index)=>(
-                            <div className="table-row" key={index}>
-                                <div className="table-cell">{itemEvent.EventType.Name}</div>
-                                <div className="table-cell">{itemEvent.DateTime}</div>
-                                {/* Display assigned name in format: (last, first) */}
-                                <div className="table-cell">{`${itemEvent.Employee.LastName} ${itemEvent.Employee.FirstName}`}</div>
-                                <div className="table-cell">{itemEvent.Reason}</div>
-                            </div>
-                        ))}
+                    <div className="table border mb-[20px]">
+                        <div className="table-row-group">
+                            {item.ItemEvents.map((itemEvent,index)=>(
+                                <div className="table-row" key={index}>
+                                    <div className="table-cell w-[100px]">{itemEvent.EventType.Name}</div>
+                                    {/* DateTime will be truncated after the date */}
+                                    <div className="table-cell w-[90px]">{itemEvent.DateTime.split('T')[0]}</div>
+                                    {/* Display assigned name in format: (last, first) */}
+                                    <div className="table-cell w-[220px]">{`${itemEvent.Employee.LastName}, ${itemEvent.Employee.FirstName}`}</div>
+                                    <div className="hidden min-[800px]:table-cell w-[390px]">{itemEvent.Reason}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
                 <PageSelector/>
