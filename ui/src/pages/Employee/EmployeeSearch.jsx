@@ -58,7 +58,12 @@ export default function EmployeeSearch() {
                 <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white"
                 onClick={(e)=>Search(e)}>Search</button>
             </form>
-            <div id="search-results" className="m-auto max-w-[416px] mt-[40px]">
+
+            {/* Show loading if employees have not been fetched yet */}
+            {!employees && <p className="mx-[30px]">Loading...</p>}
+
+            {/* Show only when employees have been fetched */}
+            {employees && <div id="search-results" className="m-auto max-w-[416px] mt-[40px]">
                 <div className="table">
                     <div className="table-header-group">
                         <div className="table-row">
@@ -92,7 +97,7 @@ export default function EmployeeSearch() {
                     className="ml-[40px] w-[100px] py-[12px] border rounded-sm bg-[#014880] text-white"
                     onClick={()=>navigate('/employee/add')}>Add</button>
                 </div>
-            </div>
+            </div>}
         </>
     )
 }

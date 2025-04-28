@@ -57,7 +57,12 @@ export default function InventorySearch() {
                 <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white"
                 onClick={(e)=>Search(e)}>Search</button>
             </form>
-            <div id="search-results" className="mx-[30px] max-w-[410px] min-[830px]:max-w-[770px] mt-[40px]">
+
+            {/* Show loading if items have not been fetched yet */}
+            {!items && <p className="mx-[30px]">Loading...</p>}
+            
+            {/* Show only when items have been fetched */}
+            {items && <div id="search-results" className="mx-[30px] max-w-[410px] min-[830px]:max-w-[770px] mt-[40px]">
                 <div className="table">
                     <div className="table-header-group mb-[10px]">
                         <div className="table-row">
@@ -82,9 +87,8 @@ export default function InventorySearch() {
                                 <div className="hidden min-[830px]:table-cell w-[100px]">{item.ItemType.Name}</div>
                                 <div className="table-cell w-[170px]">{item.Model}</div>
                                 <div className="table-cell w-[110px]">{item.Active? "Active" : "Disabled"}</div>
-                                {/*Assigned employee name will be written in format: (last name, first name)*/}
-                                {/*Is not displayed if there is no assigned employee*/}
-                                {item.AssignedTo && <div className="hidden min-[830px]:table-cell w-[260px]">{`${item.AssignedTo.LastName}, ${item.AssignedTo.FirstName}`}</div>}
+                                {/*If it exists, assigned employee name will be written in format: (last name, first name)*/}
+                                {<div className="hidden min-[830px]:table-cell w-[260px]">{item.AssignedTo? `${item.AssignedTo.LastName}, ${item.AssignedTo.FirstName}` : ""}</div>}
                             </div>
                         ))}
                     </div>
@@ -96,7 +100,7 @@ export default function InventorySearch() {
                     className="ml-[40px] w-[100px] py-[12px] border rounded-sm bg-[#014880] text-white"
                     onClick={()=>navigate('/inventory/add')}>Add</button>
                 </div>
-            </div>
+            </div>}
         </>
     )
 }
