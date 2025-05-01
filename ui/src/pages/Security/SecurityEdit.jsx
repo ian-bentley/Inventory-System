@@ -6,6 +6,7 @@ export default function SecurityEdit() {
     const { id } = useParams()
     const [access, setAccess] = useState(null)
     const [newPassword, setNewPassword] = useState("")
+    const [passwordConfirm, setPasswordConfirm] = useState("")
     const navigate = useNavigate()
 
     // Get access by id parameter
@@ -53,6 +54,13 @@ export default function SecurityEdit() {
 
     // Reset password
     const ResetPassword = ()=> {
+        if (newPassword != passwordConfirm) {
+            alert("Passwords do not match.")
+            setNewPassword("")
+            setPasswordConfirm("")
+            return;
+        }
+
         if (newPassword != "")
         {
             fetch(config.api.url+"api/Security/ForceResetPassword", {
@@ -124,6 +132,20 @@ export default function SecurityEdit() {
         })
     }
 
+    // Resend confirmation email
+    const ResendConfirmationEmail = ()=>{
+        fetch(config.api.url+"resendConfirmationEmail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                email: access.Email
+            })
+        })
+    }
+
     if (!access) return <div className="mx-[20px] mt-[40px]">Loading...</div>
 
     return(
@@ -131,7 +153,14 @@ export default function SecurityEdit() {
             <form className="px-[20px] mt-[40px]">
                 <div className="flex flex-wrap">
                     <div>
-                        <p className="mb-[10px]">Email: {access.Email}</p>
+                        <div className="mb-[10px]">
+                            <p className="mb-[20px]">Email: {access.Email}</p>
+                            <label className="mr-[10px]" htmlFor="emailConfirmed">Email confirmed?</label>
+                            <input className="mr-[10px]" type="checkbox" id="emailConfirmed" checked={access.EmailConfirmed} readOnly/>
+                            <button className="w-[120px] py-[12px] mb-[30px] border rounded-sm bg-[#014880] text-white"
+                            type="button"
+                            onClick={ResendConfirmationEmail}>Resend</button>
+                        </div>
                         <div className="flex flex-col mb-[40px]">
                             <input className="w-[240px] px-[20px] py-[12px] mb-[10px] border rounded-sm"
                             type="password" name="NewPassword"
@@ -141,6 +170,8 @@ export default function SecurityEdit() {
                             <input className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
                             type="password" name="passwordConfirm"
                             placeholder="Confirm password"
+                            value={passwordConfirm}
+                            onChange={(e)=>setPasswordConfirm(e.target.value)}
                             /> 
                             <button className="w-[120px] py-[12px] mb-[30px] border rounded-sm bg-[#014880] text-white"
                             type="button"

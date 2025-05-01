@@ -8,11 +8,22 @@ export default function SecurityAdd() {
         email: "",
         password: ""
     })
+    const [passwordConfirm, setPasswordConfirm] = useState("")
     const navigate = useNavigate()
 
     const Register = (e) => {
         // Prevent form from refreshing page
         e.preventDefault()
+
+        if (newUser.password != passwordConfirm) {
+            alert("Passwords do not match.")
+            setNewUser(prev => ({
+                ...prev,
+                password: ""
+            }));
+            setPasswordConfirm("")
+            return;
+        }
 
         // Send registration
         fetch(config.api.url+"register", {
@@ -50,7 +61,7 @@ export default function SecurityAdd() {
                 placeholder="Email"
                 value={newUser.email}
                 onChange={(handleChange)}/>
-                <input className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
+                <input className="w-[240px] px-[20px] py-[12px] mb-[20px] border rounded-sm"
                 type="password" name="password"
                 placeholder="Password"
                 value={newUser.password}
