@@ -73,8 +73,10 @@ export default function InventoryEdit() {
 
     // If a form input changes, update the item based on the change
     const handleChange = (e) => {
-        const { name, value } = e.target
-        setItem(prev => ({ ...prev, [name]: value }))
+        const { name, value, type, checked } = e.target
+        setItem(prev => ({ 
+            ...prev, 
+            [name]: type == "checkbox"? checked : value }))
     }
 
     // Edit item

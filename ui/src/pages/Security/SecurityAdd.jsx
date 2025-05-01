@@ -44,15 +44,23 @@ export default function SecurityAdd() {
 
     return(
         <>
-            <form>
-                <input type="text" name="email"
+            <form className="flex flex-col items-center mt-[210px]">
+                <input className="w-[240px] px-[20px] py-[12px] mb-[20px] border rounded-sm"
+                type="email" name="email"
+                placeholder="Email"
                 value={newUser.email}
                 onChange={(handleChange)}/>
-                <input type="text" name="password"
+                <input className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
+                type="password" name="password"
+                placeholder="Password"
                 value={newUser.password}
                 onChange={handleChange}/>
-                <input type="text" id="password-confirm" name="passwordConfirm"/>
-                <button onClick={(event)=>Register(event)}>Register</button>
+                <input className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
+                type="password" name="passwordConfirm"
+                placeholder="Confirm password"
+                />
+                <button className="w-[120px] py-[12px] border rounded-sm bg-[#014880] text-white"
+                onClick={(event)=>Register(event)}>Register</button>
             </form>
         </>
     )

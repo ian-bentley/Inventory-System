@@ -19,7 +19,8 @@ export default function EmployeeAdd() {
             City: "",
             UsStateId: "",
             Zip: ""
-        }
+        },
+        Notes: ""
     })
 
     const [departments, setDepartments] = useState(null)
@@ -113,7 +114,7 @@ export default function EmployeeAdd() {
 
     // If the form input changes, update the employee based on the change
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
 
         if (name.includes(".")) {
             const [parentKey, childKey] = name.split(".");
@@ -127,7 +128,7 @@ export default function EmployeeAdd() {
         } else {
             setEmployee(prev => ({
             ...prev,
-            [name]: value
+            [name]: type == "checkbox"? checked : value
             }))
         }
     }
@@ -161,7 +162,7 @@ export default function EmployeeAdd() {
             }
             else
             {
-                alert("Employee added successfully!");
+                alert("Employee added successfully!")
                 navigate("/employee")
             }
         })

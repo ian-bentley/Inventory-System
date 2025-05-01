@@ -7,6 +7,13 @@ export default function EmployeeForm({employee, departments, employees, usStates
             <form className="flex flex-col items-center"
             onSubmit={onSubmit}>
                 <label className="mt-[50px] mb-[20px]">Enter the employee information below:</label>
+                <div className="w-[240px]">
+                    <input className="mb-[30px] mr-[10px]"
+                    type="checkbox" name="Active"
+                    checked={employee.Active}
+                    onChange={onChange}/>
+                    <label htmlFor="active">Active</label>
+                </div>
                 <div className="flex flex-col items-center">
                     <input className="w-[240px] px-[20px] py-[12px] mb-[20px] border rounded-sm"
                     type="text" name="FirstName"
@@ -95,6 +102,14 @@ export default function EmployeeForm({employee, departments, employees, usStates
                     value={employee.HomeAddress.Zip}
                     onChange={onChange}
                     />
+                </div>
+                <div className="flex flex-col">
+                    <label className="mb-[10px]"
+                    htmlFor="notes">Notes</label>
+                    <textarea className="w-[360px] px-[20px] py-[12px] mb-[20px] border rounded-sm resize-none" 
+                    name="Notes" rows="6"
+                    value={employee.Notes? employee.Notes : ""}
+                    onChange={onChange}></textarea>
                 </div>
                 <button className="w-[125px] py-[12px] border rounded-sm bg-[#014880] text-white"
                 >Save</button>

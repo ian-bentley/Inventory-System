@@ -66,8 +66,9 @@ export default function EmployeeDetails() {
                                 </div>
                             </div>
                             <input className="mb-[30px] mr-[10px]"
-                            type="checkbox" id="active" 
-                            checked={employee.Active}/>
+                            type="checkbox" name="Active"
+                            checked={employee.Active}
+                            readOnly/>
                             <label htmlFor="active">Active</label>
                         </div>
                         {/* Goes to employee edit for this employee */}
@@ -77,13 +78,15 @@ export default function EmployeeDetails() {
                     </div>
                     <div className="flex flex-col ml-[60px]">
                         <label htmlFor="notes">Notes</label>
-                        <textarea id="notes" className="w-[360px] px-[20px] py-[12px] mb-[20px] border rounded-sm resize-none" 
-                        rows="6"
-                        value={employee.Notes? employee.Notes : ""}></textarea>
+                        <textarea className="w-[360px] px-[20px] py-[12px] mb-[20px] border rounded-sm resize-none" 
+                        name="Notes" rows="6"
+                        value={employee.Notes? employee.Notes : ""}
+                        readOnly></textarea>
                     </div>
                 </form>
             </section>
             <section id="assigned-items" className="px-[20px]">
+                <h1 className="mb-[10px]">Assigned Items</h1>
                 <div id="assigned-items" className="table">
                     <div className="table-header-group">
                         <div className="table-row">
@@ -96,7 +99,7 @@ export default function EmployeeDetails() {
                 <div className="table border mb-[20px]">
                     <div className="table-row-group">
                         {employee.Items.map((item,index)=>(
-                                <div className="table-row" key={index}>
+                            <div className="table-row" key={index}>
                                 <div className="table-cell w-[130px]">{item.SerialNumber}</div>
                                 <div className="table-cell w-[100px]">{item.ItemType.Name}</div>
                                 <div className="table-cell w-[170px]">{item.Model}</div>
@@ -104,6 +107,7 @@ export default function EmployeeDetails() {
                         ))}
                     </div>
                 </div>
+                {employee.Items.length == 0 && <p className="mb-[10px]">No assigned items</p>}
                 <PageSelector/>
             </section>
         </>

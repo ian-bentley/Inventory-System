@@ -131,7 +131,7 @@ export default function EmployeeEdit() {
 
     // If a form input changes, update the employee based on the change
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
 
         if (name.includes(".")) {
             const [parentKey, childKey] = name.split(".");
@@ -145,7 +145,7 @@ export default function EmployeeEdit() {
         } else {
             setEmployee(prev => ({
             ...prev,
-            [name]: value
+            [name]: type == "checkbox"? checked : value
             }))
         }
     }

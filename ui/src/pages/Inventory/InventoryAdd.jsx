@@ -10,7 +10,8 @@ export default function AddItemPage() {
         Active: true,
         SerialNumber: "",
         ItemTypeId: "",
-        Model: ""
+        Model: "",
+        Notes: ""
     })
 
     const [itemTypes, setItemTypes] = useState(null)
@@ -46,8 +47,10 @@ export default function AddItemPage() {
 
     // If a form input changes, update the item data based on the change
     const handleChange = (e) => {
-        const { name, value } = e.target
-        setItem(prev => ({ ...prev, [name]: value }))
+        const { name, value, type, checked } = e.target
+        setItem(prev => ({ 
+            ...prev, 
+            [name]: type == "checkbox"? checked : value }))
     }
 
     // Add item

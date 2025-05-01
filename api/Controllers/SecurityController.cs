@@ -55,15 +55,15 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("GetAccess")]
-        public async Task<IActionResult> GetAccess(string userId)
+        public async Task<IActionResult> GetAccess(string Id)
         {
             // Get the user based on the id
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(Id);
 
             // If user was not found
             if (user == null)
             {
-                return NotFound($"Cannot get user. User (id:{userId}) was not found. Please check id sent and try again.");
+                return NotFound($"Cannot get user. User (id:{Id}) was not found. Please check id sent and try again.");
             }
 
             // Get the user's claims
@@ -90,10 +90,17 @@ namespace api.Controllers
 
 
         [Authorize(Policy = "EditSecurity")]
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateAccess")]
         public async Task<IActionResult> UpdateAccess([FromBody] Access access)
         {
+            // Log ModelState errors
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(new { errors });
+            }
+
             // Initialize access claims list
             var accessClaimTypes = new[]
             {
@@ -156,6 +163,39 @@ namespace api.Controllers
             }
 
             return Ok("User access updated.");
+        }
+
+        [Authorize(Policy = "EditSecurity")]
+        [HttpPost("ForceResetPassword")]
+        public async Task<IActionResult> ForceResetPassword([FromBody] NewPasswordRequest newPasswordRequest)
+        {
+            // Ensure new password is provided
+            if (string.IsNullOrEmpty(newPasswordRequest.NewPassword))
+            {
+                return BadRequest("New password is required.");
+            }
+
+            var user = await _userManager.FindByIdAsync(newPasswordRequest.UserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Remove existing password if there is one
+            var hasPassword = await _userManager.HasPasswordAsync(user);
+            if (hasPassword)
+            {
+                var removeResult = await _userManager.RemovePasswordAsync(user);
+                if (!removeResult.Succeeded)
+                    return BadRequest(removeResult.Errors);
+            }
+
+            // Add the new password
+            var addResult = await _userManager.AddPasswordAsync(user, newPasswordRequest.NewPassword);
+            if (!addResult.Succeeded)
+                return BadRequest(addResult.Errors);
+
+            return Ok("Password has been reset.");
         }
     }
 }
