@@ -8,6 +8,7 @@ using api.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,30 +62,17 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 // Use cookie authentication
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddCookie(options =>
+    .AddCookie();
+
+builder.Services.ConfigureApplicationCookie(options =>
 {
     options.SlidingExpiration = true; // Enable sliding expiration
     options.ExpireTimeSpan = TimeSpan.FromDays(1); // Cookie expiration time
     options.Cookie.HttpOnly = true; // Cookie should be accessible only via HTTP (not JavaScript)
     options.Cookie.SameSite = SameSiteMode.None; // Cookie SameSite mode for cross-origin requests
     options.Cookie.Name = "InventorySystem.AuthCookie";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-    // Set SecurePolicy based on the environment
-    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-    if (environment == Environments.Production)
-    {
-        // In production, require cookies to be sent over HTTPS
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    }
-    else
-    {
-        // For local development (HTTP), set SecurePolicy to None
-        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-    }
-});
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
     options.Events.OnRedirectToLogin = context =>
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
