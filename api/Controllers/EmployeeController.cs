@@ -93,7 +93,9 @@ namespace api.Controllers
         public async Task<IActionResult> UpdateEmployee([FromBody] Employee updatedEmployee)
         {
             // Find employee by id
-            var employee = await _context.Employees.FindAsync(updatedEmployee.Id);
+            var employee = await _context.Employees
+                .Include(e => e.HomeAddress)
+                .FirstOrDefaultAsync(e => e.Id == updatedEmployee.Id);
 
             // If employee was not found
             if (employee == null)
@@ -103,7 +105,18 @@ namespace api.Controllers
 
             // Update employee
             _context.Entry(employee).CurrentValues.SetValues(updatedEmployee);
-            
+
+            // If the HomeAddress exists in both DB and input
+            if (employee.HomeAddress != null && updatedEmployee.HomeAddress != null)
+            {
+                _context.Entry(employee.HomeAddress).CurrentValues.SetValues(updatedEmployee.HomeAddress);
+            }
+            else if (employee.HomeAddress == null && updatedEmployee.HomeAddress != null)
+            {
+                // If employee has no address yet, add the new one
+                employee.HomeAddress = updatedEmployee.HomeAddress;
+            }
+
             // Save changes
             await _context.SaveChangesAsync();
 

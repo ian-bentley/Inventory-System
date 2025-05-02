@@ -100,7 +100,6 @@ export default function SecurityEdit() {
 
     // Update access
     const UpdateAccess = ()=> {
-        console.log(access)
         fetch(config.api.url+"api/Security/UpdateAccess", {
             method: "PUT",
             headers: {

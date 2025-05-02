@@ -1,6 +1,6 @@
 {
     "api": {
-      "url": "http://localhost:5227/"
+      "url": "http://localhost:5227/" 
     },
   
     "ui": {

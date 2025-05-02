@@ -69,7 +69,8 @@ export default function SecurityAdd() {
                 <input className="w-[240px] px-[20px] py-[12px] mb-[30px] border rounded-sm"
                 type="password" name="passwordConfirm"
                 placeholder="Confirm password"
-                />
+                value={passwordConfirm}
+                onChange={(e)=>setPasswordConfirm(e.target.value)}/>
                 <button className="w-[120px] py-[12px] border rounded-sm bg-[#014880] text-white"
                 onClick={(event)=>Register(event)}>Register</button>
             </form>
