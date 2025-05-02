@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import PageSelector from "../../components/PageSelector"
-import config from "../../../ui.config.json"
 import { useNavigate } from "react-router-dom"
 
 export default function SecuritySearch() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [accesses, setAccesses] = useState(null)
     const [filteredAccesses, setFilteredAccesses] = useState(null)
     const [searchText, setSearchText] = useState("")
@@ -11,7 +11,7 @@ export default function SecuritySearch() {
 
     // Get data for access list
     useEffect(()=> {
-        fetch(config.api.url+"api/Security/GetAccesses", {
+        fetch(`${baseUrl}api/Security/GetAccesses`, {
             credentials: "include"
           })
         .then (async response => {

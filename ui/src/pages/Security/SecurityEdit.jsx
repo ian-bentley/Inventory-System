@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import config from "../../../ui.config.json";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function SecurityEdit() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams()
     const [access, setAccess] = useState(null)
     const [newPassword, setNewPassword] = useState("")
@@ -11,7 +11,7 @@ export default function SecurityEdit() {
 
     // Get access by id parameter
     useEffect(()=> {
-        fetch(config.api.url+"api/Security/GetAccess?id="+id, {
+        fetch(`${baseUrl}api/Security/GetAccess?id=${id}`, {
             credentials: "include"
           })
         .then(async response => {
@@ -63,7 +63,7 @@ export default function SecurityEdit() {
 
         if (newPassword != "")
         {
-            fetch(config.api.url+"api/Security/ForceResetPassword", {
+            fetch(`${baseUrl}api/Security/ForceResetPassword`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -100,7 +100,7 @@ export default function SecurityEdit() {
 
     // Update access
     const UpdateAccess = ()=> {
-        fetch(config.api.url+"api/Security/UpdateAccess", {
+        fetch(`${baseUrl}api/Security/UpdateAccess`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -133,7 +133,7 @@ export default function SecurityEdit() {
 
     // Resend confirmation email
     const ResendConfirmationEmail = ()=>{
-        fetch(config.api.url+"resendConfirmationEmail", {
+        fetch(`${baseUrl}resendConfirmationEmail`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

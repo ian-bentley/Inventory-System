@@ -1,10 +1,10 @@
 import { useState } from "react"
-import config from "../../ui.config.json"
 import { useNavigate } from "react-router-dom"
 
 export default function Login() {
     const notAuthenticatedMessage = "The email and password entered does not match any account on record. Please enter a valid email/password or choose Forgot Password to recover your account."
 
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [email, SetEmail] = useState('')
     const [password, SetPassword] = useState('')
     const [notAuthenticated, SetNotAuthenticated] = useState(false)
@@ -15,7 +15,7 @@ export default function Login() {
         e.preventDefault()
 
         // Send login request
-        fetch(config.api.url+"login?useCookies=true", {
+        fetch(`${baseUrl}login?useCookies=true`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

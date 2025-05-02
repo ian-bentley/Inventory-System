@@ -1,9 +1,9 @@
 import EmployeeForm from "../../components/EmployeeForm";
 import { useEffect, useState } from "react";
-import config from "../../../ui.config.json";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function EmployeeEdit() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams()
     const [employee, setEmployee] = useState(null)
     const [departments, setDepartments] = useState(null)
@@ -13,7 +13,7 @@ export default function EmployeeEdit() {
 
     // Get departments
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetDepartments", {
+        fetch(`${baseUrl}api/Employee/GetDepartments`, {
             credentials: "include"
         })
         .then(async response => {
@@ -41,7 +41,7 @@ export default function EmployeeEdit() {
 
     // Get employees
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetEmployees", {
+        fetch(`${baseUrl}api/Employee/GetEmployees`, {
             credentials: "include"
         })
         .then(async response => {
@@ -69,7 +69,7 @@ export default function EmployeeEdit() {
 
     // Get US states
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetUsStates", {
+        fetch(`${baseUrl}api/Employee/GetUsStates`, {
             credentials: "include"
         })
         .then(async response => {
@@ -97,7 +97,7 @@ export default function EmployeeEdit() {
 
     // Get employee by id parameter
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetEmployee?id="+id, {
+        fetch(`${baseUrl}api/Employee/GetEmployee?id=${id}`, {
             credentials: "include"
           })
         .then(async response => {
@@ -154,7 +154,7 @@ export default function EmployeeEdit() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        fetch(config.api.url+"api/Employee/UpdateEmployee", {
+        fetch(`${baseUrl}api/Employee/UpdateEmployee`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

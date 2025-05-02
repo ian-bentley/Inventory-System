@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import InventoryForm from "../../components/InventoryForm";
-import config from "../../../ui.config.json";
 import { useNavigate } from "react-router-dom";
 
 export default function AddItemPage() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     // Item data
     const [item, setItem] = useState({
@@ -19,7 +19,7 @@ export default function AddItemPage() {
 
     // Get item types
     useEffect(()=> {
-        fetch(config.api.url+"api/Inventory/GetItemTypes", {
+        fetch(`${baseUrl}api/Inventory/GetItemTypes`, {
             credentials: "include"
         })
         .then(async response => {
@@ -57,7 +57,7 @@ export default function AddItemPage() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        fetch(config.api.url+"api/Inventory/AddItem", {
+        fetch(`${baseUrl}api/Inventory/AddItem`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

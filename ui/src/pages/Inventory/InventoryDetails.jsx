@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import config from "../../../ui.config.json";
 import { useParams, useNavigate } from "react-router-dom";
 import PageSelector from "../../components/PageSelector"
 
 export default function InventoryDetails() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams()
     const [item, setItem] = useState(null)
     const [employees, setEmployees] = useState(null)
@@ -22,7 +22,7 @@ export default function InventoryDetails() {
 
     // Get item by id parameter
     useEffect(()=> {
-        fetch(config.api.url+"api/Inventory/GetItem?id="+id, {
+        fetch(`${baseUrl}api/Inventory/GetItem?id=${+id}`, {
             credentials: "include"
           })
         .then(async response => {
@@ -55,7 +55,7 @@ export default function InventoryDetails() {
 
     // Get employees
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetEmployees", {
+        fetch(`${baseUrl}api/Employee/GetEmployees`, {
             credentials: "include"
         })
         .then(async response => {
@@ -112,7 +112,7 @@ export default function InventoryDetails() {
         // Remove assigned employee and update item
         item.AssignedToId = null
 
-        fetch(config.api.url+"api/Inventory/UpdateItem", {
+        fetch(`${baseUrl}api/Inventory/UpdateItem`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -137,7 +137,7 @@ export default function InventoryDetails() {
             else
             {
                 // Add item event
-                fetch(config.api.url+"api/Inventory/AddItemEvent", {
+                fetch(`${baseUrl}api/Inventory/AddItemEvent`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -181,7 +181,7 @@ export default function InventoryDetails() {
         item.AssignedToId = itemEvent.EmployeeId
 
         // Add assigned employee and update item
-        fetch(config.api.url+"api/Inventory/UpdateItem", {
+        fetch(`${baseUrl}api/Inventory/UpdateItem`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -206,7 +206,7 @@ export default function InventoryDetails() {
             else
             {
                 // Add item event
-                fetch(config.api.url+"api/Inventory/AddItemEvent", {
+                fetch(`${baseUrl}api/Inventory/AddItemEvent`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

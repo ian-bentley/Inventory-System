@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import config from "../../../ui.config.json";
 import { useNavigate } from "react-router-dom";
 
 export default function SecurityAdd() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
     // Access data
     const [newUser, setNewUser] = useState({
         email: "",
@@ -26,7 +27,7 @@ export default function SecurityAdd() {
         }
 
         // Send registration
-        fetch(config.api.url+"register", {
+        fetch(`${baseUrl}register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

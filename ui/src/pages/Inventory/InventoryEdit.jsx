@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import InventoryForm from "../../components/InventoryForm";
-import config from "../../../ui.config.json";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function InventoryEdit() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams()
     const [item, setItem] = useState(null)
     const [itemTypes, setItemTypes] = useState(null)
@@ -11,7 +11,7 @@ export default function InventoryEdit() {
 
     // Get item types
     useEffect(()=> {
-        fetch(config.api.url+"api/Inventory/GetItemTypes", {
+        fetch(`${baseUrl}api/Inventory/GetItemTypes`, {
             credentials: "include"
         })
         .then(async response => {
@@ -39,7 +39,7 @@ export default function InventoryEdit() {
 
     // Get item by id parameter
     useEffect(()=> {
-        fetch(config.api.url+"api/Inventory/GetItem?id="+id, {
+        fetch(`${baseUrl}api/Inventory/GetItem?id=${id}`, {
             credentials: "include"
           })
         .then(async response => {
@@ -83,7 +83,7 @@ export default function InventoryEdit() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        fetch(config.api.url+"api/Inventory/UpdateItem", {
+        fetch(`${baseUrl}api/Inventory/UpdateItem`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
-import config from "../../../ui.config.json";
 import { useParams, useNavigate } from "react-router-dom";
 import PageSelector from "../../components/PageSelector"
 
 export default function EmployeeDetails() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams()
     const [employee, setEmployee] = useState(null)
     const navigate = useNavigate()
 
     // Get employee by id parameter
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetEmployee?id="+id, {
+        fetch(`${baseUrl}api/Employee/GetEmployee?id=${id}`, {
             credentials: "include"
           })
         .then(async response => {

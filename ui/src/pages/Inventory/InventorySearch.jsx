@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import PageSelector from "../../components/PageSelector"
-import config from "../../../ui.config.json"
 import { useNavigate } from "react-router-dom"
 
 export default function InventorySearch() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [items, setItems] = useState(null)
     const [filteredItems, setFilteredItems] = useState(null)
     const [searchText, setSearchText] = useState("")
@@ -11,7 +11,7 @@ export default function InventorySearch() {
     
     // Get data for items list
     useEffect(()=> {
-        fetch(config.api.url+"api/Inventory/GetItems", {
+        fetch(`${baseUrl}api/Inventory/GetItems`, {
             credentials: "include"
           })
         .then (async response => {

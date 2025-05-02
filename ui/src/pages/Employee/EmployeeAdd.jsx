@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import config from "../../../ui.config.json";
 import { useNavigate } from "react-router-dom";
 import EmployeeForm from '../../components/EmployeeForm'
 
 export default function EmployeeAdd() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
     // Employee data
     const [employee, setEmployee] = useState({
         Active: true,
@@ -30,7 +31,7 @@ export default function EmployeeAdd() {
 
     // Get departments
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetDepartments", {
+        fetch(`${baseUrl}api/Employee/GetDepartments`, {
             credentials: "include"
         })
         .then(async response => {
@@ -58,7 +59,7 @@ export default function EmployeeAdd() {
 
     // Get employees
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetEmployees", {
+        fetch(`${baseUrl}api/Employee/GetEmployees`, {
             credentials: "include"
         })
         .then(async response => {
@@ -86,7 +87,7 @@ export default function EmployeeAdd() {
 
     // Get US states
     useEffect(()=> {
-        fetch(config.api.url+"api/Employee/GetUsStates", {
+        fetch(`${baseUrl}api/Employee/GetUsStates`, {
             credentials: "include"
         })
         .then(async response => {
@@ -137,7 +138,7 @@ export default function EmployeeAdd() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        fetch(config.api.url+"api/Employee/AddEmployee", {
+        fetch(`${baseUrl}api/Employee/AddEmployee`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
