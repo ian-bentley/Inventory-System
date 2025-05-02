@@ -68,7 +68,7 @@ builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
     if (environment == Environments.Production)
     {
         // In production, require cookies to be sent over HTTPS
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     }
     else
     {
