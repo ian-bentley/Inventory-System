@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System;
 using Newtonsoft.Json.Serialization;
 using api.Data;
 using api.Models;
@@ -8,7 +7,6 @@ using api.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 

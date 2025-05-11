@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417191520_UpdateItem")]
-    partial class UpdateItem
+    [Migration("20250511000314_InitialCommit")]
+    partial class InitialCommit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,11 +242,9 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Employee", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -256,7 +254,8 @@ namespace api.Migrations
 
                     b.Property<string>("EmployeeNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -266,8 +265,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ManagerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ManagerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -286,6 +285,31 @@ namespace api.Migrations
                     b.HasIndex("ManagerId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("api.Models.EmployeeAddressLink", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LinkB");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LinkA");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("SecureLinks_A", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.EventType", b =>
@@ -310,18 +334,13 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.HomeAddress", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Street1")
                         .IsRequired()
@@ -339,9 +358,6 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
                     b.HasIndex("UsStateId");
 
                     b.ToTable("HomeAddresses");
@@ -349,17 +365,15 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Item", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("AssignedToId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("AssignedToId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ItemTypeId")
                         .HasColumnType("int");
@@ -389,23 +403,21 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ItemEvent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("EventTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -530,21 +542,32 @@ namespace api.Migrations
                     b.Navigation("Manager");
                 });
 
-            modelBuilder.Entity("api.Models.HomeAddress", b =>
+            modelBuilder.Entity("api.Models.EmployeeAddressLink", b =>
                 {
-                    b.HasOne("api.Models.Employee", "Employee")
-                        .WithOne("HomeAddress")
-                        .HasForeignKey("api.Models.HomeAddress", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("api.Models.HomeAddress", "HomeAddress")
+                        .WithOne()
+                        .HasForeignKey("api.Models.EmployeeAddressLink", "AddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("api.Models.Employee", "Employee")
+                        .WithOne()
+                        .HasForeignKey("api.Models.EmployeeAddressLink", "EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("HomeAddress");
+                });
+
+            modelBuilder.Entity("api.Models.HomeAddress", b =>
+                {
                     b.HasOne("api.Models.UsState", "UsState")
                         .WithMany()
                         .HasForeignKey("UsStateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Employee");
 
                     b.Navigation("UsState");
                 });
@@ -601,8 +624,6 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Employee", b =>
                 {
-                    b.Navigation("HomeAddress");
-
                     b.Navigation("ItemEvents");
 
                     b.Navigation("Items");

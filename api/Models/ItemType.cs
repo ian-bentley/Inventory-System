@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Models
 {
@@ -6,7 +7,10 @@ namespace api.Models
     public class ItemType
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
+
+        [Required(ErrorMessage = "The name of the item type is required.")]
+        public string Name { get; set; }
+        
         public ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

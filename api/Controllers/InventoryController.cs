@@ -23,7 +23,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetItems()
         {
             // Get all items, their type data, their assigned data, and their events
-            return Ok( await _context.Items
+            return Ok(await _context.Items
                 .Include(item => item.ItemType)
                 .Include(item => item.AssignedTo)
                 .Include(item => item.ItemEvents)
@@ -35,7 +35,7 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("GetItem")]
-        public async Task<IActionResult> GetItem(int id)
+        public async Task<IActionResult> GetItem(Guid id)
         {
             // Get item by id, its type data, its assigned data, and its events
             var item = await _context.Items.Include(item => item.ItemType)

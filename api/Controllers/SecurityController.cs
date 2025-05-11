@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using api.Data;
+using api.DTO;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

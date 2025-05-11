@@ -22,6 +22,28 @@ namespace api.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
+            modelBuilder.Entity<EmployeeAddressLink>(entity =>
+            {
+                entity.ToTable("SecureLinks_A");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.EmployeeId).HasColumnName("LinkA");
+                entity.Property(e => e.AddressId).HasColumnName("LinkB");
+
+                entity.HasOne(e => e.Employee)
+                    .WithOne()
+                    .HasForeignKey<EmployeeAddressLink>(e => e.EmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.HomeAddress)
+                    .WithOne()
+                    .HasForeignKey<EmployeeAddressLink>(e => e.AddressId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(e => e.Employees)
