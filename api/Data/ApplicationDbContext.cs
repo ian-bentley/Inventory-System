@@ -17,6 +17,7 @@ namespace api.Data
         public DbSet<ItemEvent> ItemEvents { get; set; }
         public DbSet<ItemType> ItemTypes { get; set; }
         public DbSet<UsState> UsStates { get; set; }
+        public DbSet<EmployeeAddressLink> EmployeeAddressLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,7 +34,7 @@ namespace api.Data
                 entity.Property(e => e.AddressId).HasColumnName("LinkB");
 
                 entity.HasOne(e => e.Employee)
-                    .WithOne()
+                    .WithOne(e => e.EmployeeAddressLink)
                     .HasForeignKey<EmployeeAddressLink>(e => e.EmployeeId)
                     .OnDelete(DeleteBehavior.Restrict);
 
