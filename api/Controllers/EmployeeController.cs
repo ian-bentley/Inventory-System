@@ -129,7 +129,15 @@ namespace api.Controllers
                 {
                     Notes = e.Notes,
                     ManagerFullName = e.Manager != null ? e.Manager.FirstName + " " + e.Manager.LastName : null,
-                    AddressStreet2 = e.EmployeeAddressLink.HomeAddress.Street2
+                    AddressStreet2 = e.EmployeeAddressLink.HomeAddress.Street2,
+                    AssignedItems = e.Items
+                        .Where(e => e.AssignedToId == e.Id)
+                        .Select(e => new AssignedItemDto(
+                            e.SerialNumber,
+                            e.ItemType.Name,
+                            e.Model
+                        ))
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -173,6 +181,10 @@ namespace api.Controllers
             {
                 var departments = await _context.Departments
                 .OrderBy(e => e.Name)
+                .Select(e => new DepartmentNameDto(
+                    e.Id,
+                    e.Name
+                ))
                 .ToListAsync();
 
                 return Ok(departments);
@@ -209,8 +221,12 @@ namespace api.Controllers
             {
                 var usStates = await _context.UsStates
                 .OrderBy(e => e.Initials)
+                .Select(e => new UsStateInitialsDto(
+                    e.Id,
+                    e.Initials
+                ))
                 .ToListAsync();
-                return Ok();
+                return Ok(usStates);
             }
             catch (SqlException sqlEx)
             {
@@ -322,7 +338,7 @@ namespace api.Controllers
             {
                 var employee = await _context.Employees
                 .Include(e => e.EmployeeAddressLink)
-                .ThenInclude(link => link.HomeAddress)
+                .ThenInclude(e => e.HomeAddress)
                 .FirstOrDefaultAsync(e => e.Id == updatedEmployee.Id);
 
                 // If employee was not found

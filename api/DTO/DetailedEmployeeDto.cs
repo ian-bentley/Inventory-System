@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.Models;
 
 namespace api.DTO
 {
@@ -31,6 +32,8 @@ namespace api.DTO
         public string UsStateInitials { get; }
 
         public string AddressZip { get; }
+
+        public ICollection<AssignedItemDto> AssignedItems { get; init; } = new List<AssignedItemDto>();
 
 
         public DetailedEmployeeDto(

@@ -27,7 +27,7 @@ namespace api.Controllers
         {
             // Get all users
             var users = await _userManager.Users.ToListAsync();
-            List<Access> accesses = new List<Access>();
+            List<AccessDto> accesses = new List<AccessDto>();
 
             foreach (var user in users) 
             {
@@ -35,7 +35,7 @@ namespace api.Controllers
                 var claims = await _userManager.GetClaimsAsync(user);
 
                 // Initializze a new access object based on which claims the user has
-                accesses.Add(new Access
+                accesses.Add(new AccessDto
                 {
                     UserId = user.Id,
                     UserName = user.UserName,
@@ -71,7 +71,7 @@ namespace api.Controllers
             var claims = await _userManager.GetClaimsAsync(user);
 
             // Initializze a new access object based on which claims the user has
-            var access = new Access
+            var access = new AccessDto
             {
                 UserId = user.Id,
                 UserName = user.UserName,
@@ -93,7 +93,7 @@ namespace api.Controllers
         [Authorize(Policy = "EditSecurity")]
         [HttpPut]
         [Route("UpdateAccess")]
-        public async Task<IActionResult> UpdateAccess([FromBody] Access access)
+        public async Task<IActionResult> UpdateAccess([FromBody] EditAccessDto updatedAccess)
         {
             // Log ModelState errors
             if (!ModelState.IsValid)
@@ -114,12 +114,12 @@ namespace api.Controllers
             };
 
             //Get user based on user name
-            var user = await _userManager.FindByIdAsync(access.UserId);
+            var user = await _userManager.FindByIdAsync(updatedAccess.UserId);
 
             // If user was not found
             if (user == null)
             {
-                return NotFound($"Cannot get user. User (id:{access.UserId}) was not found. Please check id sent and try again.");
+                return NotFound($"Cannot get user. User (id:{updatedAccess.UserId}) was not found. Please check id sent and try again.");
             }
 
             // Get user's existing claims
@@ -143,12 +143,12 @@ namespace api.Controllers
 
             // Set a list with the claims based on which are set to true
             var newClaims = new List<Claim>();
-            if (access.ViewInventory) newClaims.Add(new Claim("ViewInventory", "true"));
-            if (access.EditInventory) newClaims.Add(new Claim("EditInventory", "true"));
-            if (access.ViewEmployees) newClaims.Add(new Claim("ViewEmployees", "true"));
-            if (access.EditEmployees) newClaims.Add(new Claim("EditEmployees", "true"));
-            if (access.ViewSecurity) newClaims.Add(new Claim("ViewSecurity", "true"));
-            if (access.EditSecurity) newClaims.Add(new Claim("EditSecurity", "true"));
+            if (updatedAccess.ViewInventory) newClaims.Add(new Claim("ViewInventory", "true"));
+            if (updatedAccess.EditInventory) newClaims.Add(new Claim("EditInventory", "true"));
+            if (updatedAccess.ViewEmployees) newClaims.Add(new Claim("ViewEmployees", "true"));
+            if (updatedAccess.EditEmployees) newClaims.Add(new Claim("EditEmployees", "true"));
+            if (updatedAccess.ViewSecurity) newClaims.Add(new Claim("ViewSecurity", "true"));
+            if (updatedAccess.EditSecurity) newClaims.Add(new Claim("EditSecurity", "true"));
 
             // If any claims are being added
             if (newClaims.Any())
@@ -168,7 +168,7 @@ namespace api.Controllers
 
         [Authorize(Policy = "EditSecurity")]
         [HttpPost("ForceResetPassword")]
-        public async Task<IActionResult> ForceResetPassword([FromBody] NewPasswordRequest newPasswordRequest)
+        public async Task<IActionResult> ForceResetPassword([FromBody] NewPasswordDto newPasswordRequest)
         {
             // Ensure new password is provided
             if (string.IsNullOrEmpty(newPasswordRequest.NewPassword))

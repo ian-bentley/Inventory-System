@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace api.Models

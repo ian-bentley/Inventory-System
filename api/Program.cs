@@ -7,6 +7,7 @@ using api.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,9 +111,20 @@ builder.Services.AddAuthorization(options =>
             context.User.HasClaim("EditSecurity", "true")));
 });
 
+//NEW SECTIONS
+// -----------------------
+// Configure Services
+// -----------------------
+
+// -----------------------
+// Build and Configure App
+// -----------------------
+
 // Add services to the container.
 
+// MIGHT NOT NEED NOW
 builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -120,6 +132,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).AddNewtonsoftJson(
     options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+//builder.Services.AddControllers()
+//    .AddNewtonsoftJson(options =>
+//    {
+//        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+//        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+//    });
+// ADD THIS BETTER LINE INSTEAD
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
